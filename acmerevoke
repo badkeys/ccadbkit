@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: 0BSD
+# Part of badkeys: https://badkeys.info/
+#
+# Revoke cert with private key using ACME
+
+if [ -z "$3" ]; then
+	echo "Usage:"
+	echo -en "\t$0 [server] [cert] [key]"
+	exit 1
+fi
+
+SERVER="$1"
+CERT="$2"
+KEY="$3"
+
+certbot revoke --no-delete-after-revoke \
+	--work-dir /tmp --config-dir /tmp --logs-dir /tmp \
+	-n --reason keyCompromise \
+	--server "$SERVER" --cert-path "$CERT" --key-path "$KEY"
