@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: 0BSD
+# Part of badkeys: https://badkeys.info/
+
+TDIR=~/.cache/ccadbkit
+mkdir -p $TDIR
+
+wget -P $TDIR https://ccadb.my.salesforce-sites.com/ccadb/AllProblemReportingMechanismsCSV
+wget -P $TDIR https://ccadb.my.salesforce-sites.com/ccadb/AllCertificateRecordsCSVFormatV5

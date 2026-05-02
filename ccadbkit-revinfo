@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+#
+# SPDX-License-Identifier: 0BSD
+# Part of badkeys: https://badkeys.info/
+#
+# Get problem reporting and revocation info for a certificate
+
+import argparse
+import csv
+import pathlib
+
+from cryptography import x509
+from cryptography.x509.oid import NameOID
+
+
+def getrepissuer(issuer):
+    tdir = str(pathlib.Path.home()) + "/.cache/ccadbkit"
+    csvfile = open(f"{tdir}/AllCertificateRecordsCSVFormatV5")
+    creader = csv.reader(csvfile)
+    repfile = open(f"{tdir}/AllProblemReportingMechanismsCSV")
+    rreader = csv.reader(repfile)
+    for row in creader:
+        if row[2] == issuer:
+            print(f"Root Issuer: {row[0]}")
+            for xrow in rreader:
+                if xrow[1] == row[0]:
+                    rep = xrow[0]
+                    rep = rep.replace("[at]", "@").replace("[dot]", ".")
+                    print(rep)
+
+
+ap = argparse.ArgumentParser()
+ap.add_argument("certs", nargs="+")
+args = ap.parse_args()
+
+for fn in args.certs:
+    with open(fn, "rb") as f:
+        pem = f.read()
+    crt = x509.load_pem_x509_certificate(pem)
+    issuer_str = crt.issuer.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value
+    getrepissuer(issuer_str)
