@@ -34,8 +34,7 @@ ap.add_argument("certs", nargs="+")
 args = ap.parse_args()
 
 for fn in args.certs:
-    with open(fn, "rb") as f:
-        pem = f.read()
+    pem = pathlib.Path(fn).read_bytes()
     crt = x509.load_pem_x509_certificate(pem)
     issuer_str = crt.issuer.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value
     getrepissuer(issuer_str)
